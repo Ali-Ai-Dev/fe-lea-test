@@ -79,8 +79,8 @@ def linear_CKA(
         input_confounders.to(device))
 
     hsic, pve_1, pve_2 = linear_HSIC(L_X, L_Y, input_confounders, device)
-    var1 = torch.sqrt(linear_HSIC(L_X, L_X, input_confounders)[0], device)
-    var2 = torch.sqrt(linear_HSIC(L_Y, L_Y, input_confounders)[0], device)
+    var1 = torch.sqrt(linear_HSIC(L_X, L_X, input_confounders, device)[0])
+    var2 = torch.sqrt(linear_HSIC(L_Y, L_Y, input_confounders, device)[0])
 
     # return ((hsic) / ((var1 * var2))).detach().cpu(), pve_1, pve_2
-    return ((hsic + 1e-15) / ((var1 * var2) + 1e-15)).detach().cpu(), pve_1, pve_2
+    return ((hsic + 1e-15) / ((var1 * var2) + 1e-15)), pve_1, pve_2
