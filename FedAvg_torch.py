@@ -69,7 +69,7 @@ parser = argparse.ArgumentParser(prog='FedSwap',
 parser.add_argument("--dataset", "-d", dest="dataset_name", type=str, default="CIFAR10",
                     help="dataset name", choices=['MNIST', 'CIFAR10', 'CINIC10', 'FEMNIST', 'FEMNISTwriter'])
 parser.add_argument("--NN_type", "-n", dest="neural_network_type", type=str, default="Conv2",
-                    help="neural network type", choices=['MLP1', 'MLP2','Conv1','Conv2','Conv3', 'Conv4'])
+                    help="neural network type", choices=['MLP1', 'MLP2','Conv1','Conv2','Conv3', 'Conv4', 'Conv5'])
 parser.add_argument("--num_clients", "-c", dest="num_clients", type=int, default="10",
                     help="number of clients, except for 'FEMNISTwriter', cause it fixed")
 parser.add_argument("--batch_size", "-b", dest="batch_size", type=int, default="64",
@@ -111,7 +111,7 @@ remain = args.remain
 # %%
 # # Hyper parameters (Manual)
 # dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
-# neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4'
+# neural_network_type = "Conv5" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
 
 # num_clients = 10 # except for 'FEMNISTwriter'
 # batch_size = 16
@@ -516,6 +516,8 @@ class Neural_Network_Conv2(nn.Module):
             param.data = parameters_list[i].data
 
 
+# Model for FEMNIST dataset, LEAF: A Benchmark for Federated Settings
+# https://github.com/TalwalkarLab/leaf/blob/master/models/femnist/cnn.py
 conv_kernel3 = 5
 max_kernel3 = 2
 kernels = [conv_kernel3, max_kernel3, conv_kernel3, max_kernel3]
@@ -598,6 +600,51 @@ class Neural_Network_Conv4(nn.Module):
             ('drop4', nn.Dropout(p=0.5)),
 
             ('fc3', nn.Linear(1024, nClasses)),
+        ]))
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, x):
+        logits = self.features_stack(x)
+        probs = self.softmax(logits)
+        return probs
+
+    def get_weights(self):
+        return list(self.parameters())
+    
+    def set_weights(self, parameters_list):
+        for i, param in enumerate(self.parameters()):
+            param.data = parameters_list[i].data
+
+
+
+# Model for CIFAR10 dataset, FedSwap paper
+conv_kernel5 = 3
+max_kernel5 = 2
+kernels = [conv_kernel5, max_kernel5, conv_kernel5, max_kernel5, conv_kernel5, max_kernel5]
+strides = [1, max_kernel5, 1, max_kernel5, 1, max_kernel5]
+paddings = [1, 0, 1, 0, 1, 0]
+out_w5, out_h5 = calc_out_conv_max_layers(input_width, input_height, kernels, strides, paddings)
+
+class Neural_Network_Conv5(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.features_stack = nn.Sequential(OrderedDict([
+            ('conv1', nn.Conv2d(input_channels, 64, kernel_size=conv_kernel5, stride=1, padding='same')),
+            ('relu1', nn.ReLU(inplace=True)),
+            ('pool1', nn.MaxPool2d(kernel_size=max_kernel5)),
+
+            ('conv2', nn.Conv2d(64, 128, kernel_size=conv_kernel5, padding='same')),
+            ('relu2', nn.ReLU(inplace=True)),
+            ('pool2', nn.MaxPool2d(kernel_size=max_kernel5)),
+
+            ('conv3', nn.Conv2d(128, 256, kernel_size=conv_kernel5, padding='same')),
+            ('relu3', nn.ReLU(inplace=True)),
+            ('pool3', nn.MaxPool2d(kernel_size=max_kernel5)),
+
+            ('flat', nn.Flatten()),
+            ('fc1', nn.Linear(256*out_w5*out_h5, 1024)),
+            ('relu4', nn.ReLU(inplace=True)),
+            ('fc2', nn.Linear(1024, nClasses)),
         ]))
         self.softmax = nn.Softmax(dim=1)
 
@@ -811,7 +858,7 @@ def print_prev_log(passed_steps):
         for step in range(passed_steps):
             training_time = global_history["times"]["train"][step]
             step_time = global_history["times"]["step"][step]
-            print_log(training_time, step_time, step)
+            print_log(training_time, step_time, step, step)
 
 # %%
 # FedAvg Main Loop
