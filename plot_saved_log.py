@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import argparse
 
 # %%
-matplotlib.rcParams["figure.dpi"] = 600
 global_historys = list()
 saved_files = list()
 plot_labels = list()
@@ -49,6 +48,8 @@ parser.add_argument("--plot_save_name", "-n", dest="plot_save_name", type=str, d
                     help="plots will be saved, if you set this, put it between \"name\"")
 parser.add_argument("--show_plot", "-p", dest="show_plot", type=int, default="1",
                     help="set '0', if u want to not showing plot", choices=[0, 1])
+parser.add_argument("--plot_dpi", "-d", dest="plot_dpi", type=float_range(10, 1000), default="100",
+                    help="set dpi for plotting figures, between [10...1000]")
 
 args, unknown = parser.parse_known_args()
 loss_title = args.loss_title
@@ -57,6 +58,8 @@ start_per = args.start_per
 end_per = args.end_per
 plot_save_name = args.plot_save_name
 show_plot = args.show_plot
+plot_dpi = args.plot_dpi
+matplotlib.rcParams["figure.dpi"] = plot_dpi
 
 
 for i, arg in enumerate(unknown):
@@ -86,6 +89,7 @@ for i, arg in enumerate(unknown):
 # end_per = 1
 # plot_save_name = "NONE"
 # show_plot = 1
+# matplotlib.rcParams["figure.dpi"] = 1000
 
 # %%
 for sf in saved_files:
