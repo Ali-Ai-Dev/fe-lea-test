@@ -1,12 +1,4 @@
 # %%
-# from google.colab import drive
-# drive.mount('/content/drive')
-# %cd "/content/drive/MyDrive/ColabTemp"
-
-# %%
-# !wget "https://raw.githubusercontent.com/Ali-Ai-Dev/federated-learning-test/main/cca_core.py"
-
-# %%
 import torch
 from torchvision import datasets
 from torchvision import transforms
@@ -980,7 +972,9 @@ def save_state_and_log(step):
                         )
 
     if step != 0:
-        os.remove(f"save_log/{save_file_name_pre}_{step-1}.npz")
+        delete_filename = f"save_log/{save_file_name_pre}_{step-1}.npz"
+        open(delete_filename, 'w').close() # overwrite and make the file blank instead to not make a disk full in trash dir
+        os.remove(delete_filename)
 
 # %%
 def change_time_format(seconds):
