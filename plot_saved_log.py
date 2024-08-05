@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import argparse
+import os
 
 # %%
 global_historys = list()
@@ -44,6 +45,8 @@ parser.add_argument("--start_per", "-s", dest="start_per", type=float_range(0, 1
                     help="change the start range of data with %%, between [0...1] 1 is 100%%")
 parser.add_argument("--end_per", "-e", dest="end_per", type=float_range(0, 1), default="1",
                     help="change the end range of data with %%, between [0...1] 1 is 100%%")
+parser.add_argument("--root_path", "-r", dest="root_path", type=str, default="save_log",
+                    help="root path of the '*.npz' files, put it between \"name\"")
 parser.add_argument("--plot_save_name", "-n", dest="plot_save_name", type=str, default="NONE",
                     help="plots will be saved, if you set this, put it between \"name\"")
 parser.add_argument("--show_plot", "-p", dest="show_plot", type=int, default="1",
@@ -56,6 +59,7 @@ loss_title = args.loss_title
 acc_title = args.acc_title
 start_per = args.start_per
 end_per = args.end_per
+root_path = args.root_path
 plot_save_name = args.plot_save_name
 show_plot = args.show_plot
 plot_dpi = args.plot_dpi
@@ -73,8 +77,9 @@ for i, arg in enumerate(unknown):
 # saved_files = list()
 # plot_labels = list()
 
-# saved_files.append("FA_CIFAR10_Conv2_10c_64b_1.0cp_equal_1rs_0.001lr_2ce_step_90.npz")
-# saved_files.append("FA_CIFAR10_Conv2_5c_64b_1.0cp_equal_1rs_0.001lr_1ce_step_90.npz")
+# saved_files.append("FSS_CIFAR10_Conv2_cka_linear_best_5c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_3_10_step_300.npz")
+# saved_files.append("FSS_CIFAR10_Conv2_cka_linear_best_10c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step_300.npz")
+# # saved_files.append("FSS_FEMNISTwriter_Conv2_cka_linear_best_3597c_64b_0.15cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_5_3_step_212.npz")
 # # saved_files.append("FSS_CIFAR10_Conv_cka_rbf_best_10c_64b_91s_1.0cp_1rs_0.001lr_2ce_1pes_3_10_step_90.npz")
 # # saved_files.append("FSS_FEMNIST_Conv_cka_rbf_best_5c_64b_91s_1.0cp_1rs_0.001lr_1ce_1pes_3_10_step_14.npz")
 
@@ -87,13 +92,15 @@ for i, arg in enumerate(unknown):
 # acc_title = "Accuracy on data"
 # start_per = 0
 # end_per = 1
+# root_path = "save_log"
 # plot_save_name = "NONE"
 # show_plot = 1
-# matplotlib.rcParams["figure.dpi"] = 1000
+# matplotlib.rcParams["figure.dpi"] = 100
 
 # %%
 for sf in saved_files:
-    npzFile = np.load(f"save_log/{sf}", allow_pickle=True)
+    file_path = os.path.join(root_path, sf)
+    npzFile = np.load(file_path, allow_pickle=True)
     global_historys.append(npzFile["global_history"].item())
     npzFile.close()
 
@@ -115,7 +122,8 @@ plt.title(loss_title)
 plt.legend()
 
 if plot_save_name != 'NONE':
-    plt.savefig(f"save_log/{plot_save_name}_loss.jpg")
+    file_path = os.path.join(root_path, plot_save_name)
+    plt.savefig(f"{file_path}_loss.jpg")
 
 if show_plot:
     plt.show()
@@ -133,7 +141,8 @@ plt.title(acc_title)
 plt.legend()
 
 if plot_save_name != 'NONE':
-    plt.savefig(f"save_log/{plot_save_name}_accuracy.jpg")
+    file_path = os.path.join(root_path, plot_save_name)
+    plt.savefig(f"{file_path}_accuracy.jpg")
 
 if show_plot:
     plt.show()
