@@ -4,6 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import argparse
 import os
+import glob
 
 # %%
 global_historys = list()
@@ -77,22 +78,23 @@ for i, arg in enumerate(unknown):
 # saved_files = list()
 # plot_labels = list()
 
-# saved_files.append("FSS_CIFAR10_Conv2_cka_linear_best_5c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_3_10_step_300.npz")
-# saved_files.append("FSS_CIFAR10_Conv2_cka_linear_best_10c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step_300.npz")
-# # saved_files.append("FSS_FEMNISTwriter_Conv2_cka_linear_best_3597c_64b_0.15cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_5_3_step_212.npz")
-# # saved_files.append("FSS_CIFAR10_Conv_cka_rbf_best_10c_64b_91s_1.0cp_1rs_0.001lr_2ce_1pes_3_10_step_90.npz")
-# # saved_files.append("FSS_FEMNIST_Conv_cka_rbf_best_5c_64b_91s_1.0cp_1rs_0.001lr_1ce_1pes_3_10_step_14.npz")
+# # saved_files.append("FA_CIFAR10_Conv2_10c_64b_1.0cp_normal_1rs_0.001lr_2ce_step_212.npz")
+# # saved_files.append("FS_CIFAR10_Conv2_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
+# saved_files.append("FSS_FEMNISTwriter_Conv2_cka_linear_greedy_3597c_64b_0.15cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_5_3")
+# # saved_files.append("FSS_CIFAR10_Conv2_cka_rbf_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
+# # saved_files.append("FSS_CIFAR10_Conv2_dcka_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
 
-# plot_labels.append("t1")
-# plot_labels.append("t2")
-# # plot_labels.append("t3")
-# # plot_labels.append("t4")
+# # plot_labels.append("FA")
+# # plot_labels.append("FS")
+# plot_labels.append("linear")
+# # plot_labels.append("rbf")
+# # plot_labels.append("diff")
 
 # loss_title = "Loss on data"
 # acc_title = "Accuracy on data"
 # start_per = 0
 # end_per = 1
-# root_path = "save_log"
+# root_path = r"D:\SSD_Optimization\User\Desktop\save_log (8.5.2024 - 11.03AM)"
 # plot_save_name = "NONE"
 # show_plot = 1
 # matplotlib.rcParams["figure.dpi"] = 100
@@ -100,7 +102,10 @@ for i, arg in enumerate(unknown):
 # %%
 for sf in saved_files:
     file_path = os.path.join(root_path, sf)
-    npzFile = np.load(file_path, allow_pickle=True)
+    file_name = glob.glob(file_path+"*")
+    if len(file_name) == 0:
+        raise Exception(f"File not found! '{file_path}'")
+    npzFile = np.load(file_name[0], allow_pickle=True)
     global_historys.append(npzFile["global_history"].item())
     npzFile.close()
 
@@ -110,6 +115,9 @@ if start_per != 0 or end_per != 1:
     for gh in global_historys:
         if length != len(gh["loss"]):
             raise Exception("Cannot set 'start_per' and 'end_per' when length are diffrent.")
+
+# %% [markdown]
+# ### Loss
 
 # %%
 for i, gh in enumerate(global_historys):
@@ -128,6 +136,9 @@ if plot_save_name != 'NONE':
 if show_plot:
     plt.show()
 
+# %% [markdown]
+# ### Acc
+
 # %%
 plt.clf() # clear the figure
 
@@ -143,7 +154,7 @@ plt.legend()
 if plot_save_name != 'NONE':
     file_path = os.path.join(root_path, plot_save_name)
     plt.savefig(f"{file_path}_accuracy.jpg")
-
+    
 if show_plot:
     plt.show()
 
