@@ -78,17 +78,17 @@ for i, arg in enumerate(unknown):
 # saved_files = list()
 # plot_labels = list()
 
-# # saved_files.append("FA_CIFAR10_Conv2_10c_64b_1.0cp_normal_1rs_0.001lr_2ce_step_212.npz")
-# # saved_files.append("FS_CIFAR10_Conv2_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
-# saved_files.append("FSS_FEMNISTwriter_Conv2_cka_linear_greedy_3597c_64b_0.15cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_5_3")
-# # saved_files.append("FSS_CIFAR10_Conv2_cka_rbf_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
-# # saved_files.append("FSS_CIFAR10_Conv2_dcka_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step_212.npz")
+# saved_files.append("FA_CIFAR10_Conv2_10c_64b_1.0cp_normal_1rs_0.001lr_2ce")
+# saved_files.append("FS_CIFAR10_Conv2_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step")
+# # saved_files.append("FSS_FEMNISTwriter_Conv2_cka_linear_greedy_3597c_64b_0.15cp_1.0sp_equal_1rs_0.001lr_1ce_1pes_5_3")
+# saved_files.append("FSS_CIFAR10_Conv2_cka_rbf_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step")
+# saved_files.append("FSS_CIFAR10_Conv2_dcka_best_10c_64b_1.0cp_1.0sp_normal_1rs_0.001lr_2ce_1pes_3_10_step")
 
-# # plot_labels.append("FA")
-# # plot_labels.append("FS")
-# plot_labels.append("linear")
-# # plot_labels.append("rbf")
-# # plot_labels.append("diff")
+# plot_labels.append("FA")
+# plot_labels.append("FS")
+# # plot_labels.append("linear")
+# plot_labels.append("rbf")
+# plot_labels.append("diff")
 
 # loss_title = "Loss on data"
 # acc_title = "Accuracy on data"
@@ -102,7 +102,7 @@ for i, arg in enumerate(unknown):
 # %%
 for sf in saved_files:
     file_path = os.path.join(root_path, sf)
-    file_name = glob.glob(file_path+"*")
+    file_name = sorted(glob.glob(file_path+"*"), key=os.path.getmtime)
     if len(file_name) == 0:
         raise Exception(f"File not found! '{file_path}'")
     npzFile = np.load(file_name[0], allow_pickle=True)
