@@ -46,6 +46,10 @@ parser.add_argument("--loss_title", "-o", dest="loss_title", type=str, default="
                     help="plot title for loss, put it between \"name\"")
 parser.add_argument("--acc_title", "-a", dest="acc_title", type=str, default="Accuracy on data",
                     help="plot title for accuracy, put it between \"name\"")
+parser.add_argument("--xlabel", "-x", dest="xlabel", type=str, default="Epochs",
+                    help="set the xlabel for plot.")
+parser.add_argument("--ylabel", "-y", dest="ylabel", type=str, default="Loss/Acc",
+                    help="set the ylabel for plot.")
 parser.add_argument("--root_path", "-p", dest="root_path", type=str, default="save_log",
                     help="root path of the '*.npz' files, put it between \"name\"")
 parser.add_argument("--xlim_left", "-l", dest="xlim_left", type=float, default="None",
@@ -69,6 +73,8 @@ parser.add_argument("--colors", "-c", dest="colors", type=lambda y:re.split(' |,
 args, unknown = parser.parse_known_args()
 loss_title = args.loss_title
 acc_title = args.acc_title
+xlabel = args.xlabel
+ylabel = args.ylabel
 root_path = args.root_path
 xlim_left = args.xlim_left
 xlim_right = args.xlim_right
@@ -111,6 +117,8 @@ plot_labels.append("FS")
 colors = ["NONE"]
 loss_title = "Loss on data"
 acc_title = "Accuracy on data"
+xlabel = "Epochs"
+ylabel = "Loss/Acc"
 root_path = r"D:\SSD_Optimization\User\Desktop\save_log\MNIST_log"
 xlim_left = None
 xlim_right = None
@@ -148,8 +156,8 @@ for i, gh in enumerate(global_historys):
         plt.plot(range(length), gh["loss"], label=plot_labels[i])
     else:
         plt.plot(range(length), gh["loss"], label=plot_labels[i], color=colors[i])
-plt.xlabel("Epochs")
-plt.ylabel("Loss")
+plt.xlabel(xlabel)
+plt.ylabel(ylabel)
 plt.title(loss_title)
 plt.xlim(left=xlim_left, right=xlim_right)
 plt.ylim(bottom=ylim_bottom, top=ylim_top)
@@ -175,8 +183,8 @@ for i, gh in enumerate(global_historys):
         plt.plot(range(length), gh["accuracy"], label=plot_labels[i])
     else:
         plt.plot(range(length), gh["accuracy"], label=plot_labels[i], color=colors[i])
-plt.xlabel("Epochs")
-plt.ylabel("Accuracy")
+plt.xlabel(xlabel)
+plt.ylabel(ylabel)
 plt.title(acc_title)
 plt.xlim(left=xlim_left, right=xlim_right)
 plt.ylim(bottom=ylim_bottom, top=ylim_top)
