@@ -42,32 +42,38 @@ parser = argparse.ArgumentParser(prog="plot_saved_log.py 'file1.npz' 'label1' 'f
                                  description="Plotting saved log from '.npz' format",
                                  epilog="Written by Ali Bozorgzad for comparing results")
 
-parser.add_argument("--loss_title", "-l", dest="loss_title", type=str, default="Loss on data",
+parser.add_argument("--loss_title", "-o", dest="loss_title", type=str, default="Loss on data",
                     help="plot title for loss, put it between \"name\"")
 parser.add_argument("--acc_title", "-a", dest="acc_title", type=str, default="Accuracy on data",
                     help="plot title for accuracy, put it between \"name\"")
-parser.add_argument("--start_per", "-s", dest="start_per", type=float_range(0, 1), default="0",
-                    help="change the start range of data with %%, between [0...1] 1 is 100%%")
-parser.add_argument("--end_per", "-e", dest="end_per", type=float_range(0, 1), default="1",
-                    help="change the end range of data with %%, between [0...1] 1 is 100%%")
-parser.add_argument("--root_path", "-r", dest="root_path", type=str, default="save_log",
+parser.add_argument("--root_path", "-p", dest="root_path", type=str, default="save_log",
                     help="root path of the '*.npz' files, put it between \"name\"")
+parser.add_argument("--xlim_left", "-l", dest="xlim_left", type=float, default="None",
+                    help="set x limit left for plot.")
+parser.add_argument("--xlim_right", "-r", dest="xlim_right", type=float, default="None",
+                    help="set x limit right for plot.")
+parser.add_argument("--ylim_bottom", "-b", dest="ylim_bottom", type=float, default="None",
+                    help="set y limit bottom for plot.")
+parser.add_argument("--ylim_top", "-t", dest="ylim_top", type=float, default="None",
+                    help="set y limit top for plot.")
 parser.add_argument("--plot_save_name", "-n", dest="plot_save_name", type=str, default="NONE",
                     help="plots will be saved, if you set this, put it between \"name\"")
-parser.add_argument("--show_plot", "-p", dest="show_plot", type=int, default="1",
+parser.add_argument("--show_plot", "-s", dest="show_plot", type=int, default="1",
                     help="set '0', if u want to not showing plot", choices=[0, 1])
 parser.add_argument("--plot_dpi", "-d", dest="plot_dpi", type=float_range(10, 1000), default="100",
                     help="set dpi for plotting figures, between [10...1000]")
 parser.add_argument("--colors", "-c", dest="colors", type=lambda y:re.split(' |, ', y), default="NONE",
-                    help="set color for each plot in order, like: \"red, #00FF00, b\"")
+                    help="set color for each plot in order, like: \"red, #00FF00, b, C1, C2, ...\"")
 
 
 args, unknown = parser.parse_known_args()
 loss_title = args.loss_title
 acc_title = args.acc_title
-start_per = args.start_per
-end_per = args.end_per
 root_path = args.root_path
+xlim_left = args.xlim_left
+xlim_right = args.xlim_right
+ylim_bottom = args.ylim_bottom
+ylim_top = args.ylim_top
 plot_save_name = args.plot_save_name
 show_plot = args.show_plot
 plot_dpi = args.plot_dpi
@@ -83,32 +89,36 @@ for i, arg in enumerate(unknown):
 
 # %%
 # set parameters (Manual)
-# saved_files = list()
-# plot_labels = list()
+saved_files = list()
+plot_labels = list()
 
-# saved_files.append("FA_CINIC10_Conv2_30c_64b_1.0cp_equal_1rs_0.001lr_2ce_step")
-# saved_files.append("FS_CINIC10_Conv2_30c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step")
-# saved_files.append("FSS_CINIC10_Conv2_cka_linear_best_30c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step")
-# saved_files.append("FSS_CINIC10_Conv2_cka_rbf_best_30c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step")
-# saved_files.append("FSS_CINIC10_Conv2_sum_diff_best_30c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step")
-# saved_files.append("FSS_CINIC10_Conv2_dcka_best_30c_64b_1.0cp_1.0sp_equal_1rs_0.001lr_2ce_1pes_3_10_step")
+saved_files.append("FSS_MNIST_MLP1_cka_linear_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+saved_files.append("FSS_MNIST_MLP1_cka_rbf_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+saved_files.append("FSS_MNIST_MLP1_dcka_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+saved_files.append("FSS_MNIST_MLP1_sum_diff_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+saved_files.append("FSS_MNIST_MLP1_cca_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+saved_files.append("FA_MNIST_MLP1_10c_32b_1.0cp_normal_1rs_0.001lr_1ce_step_1049.npz")
+saved_files.append("FS_MNIST_MLP1_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 
-# plot_labels.append("FA")
-# plot_labels.append("FS")
-# plot_labels.append("linear")
-# plot_labels.append("rbf")
-# plot_labels.append("diff")
-# plot_labels.append("dcka")
+plot_labels.append("linear")
+plot_labels.append("rbf")
+plot_labels.append("dcka")
+plot_labels.append("diff")
+plot_labels.append("cca")
+plot_labels.append("FA")
+plot_labels.append("FS")
 
-# colors = ["NONE"]
-# loss_title = "Loss on data"
-# acc_title = "Accuracy on data"
-# start_per = 0.8
-# end_per = 1
-# root_path = r"D:\SSD_Optimization\User\Desktop\save_log (8.5.2024 - 11.03AM)"
-# plot_save_name = "NONE"
-# show_plot = 1
-# matplotlib.rcParams["figure.dpi"] = 100
+colors = ["NONE"]
+loss_title = "Loss on data"
+acc_title = "Accuracy on data"
+root_path = r"D:\SSD_Optimization\User\Desktop\save_log\MNIST_log"
+xlim_left = None
+xlim_right = None
+ylim_bottom = None
+ylim_top = None
+plot_save_name = "NONE"
+show_plot = 1
+matplotlib.rcParams["figure.dpi"] = 100
 
 # %%
 for sf in saved_files:
@@ -123,12 +133,6 @@ for sf in saved_files:
     npzFile.close()
 
 # %%
-if start_per != 0 or end_per != 1:
-    length = len(global_historys[0]["loss"])
-    for gh in global_historys:
-        if length != len(gh["loss"]):
-            raise Exception("Cannot set 'start_per' and 'end_per' when length are diffrent.")
-
 if colors[0] != "NONE":
     if len(colors) != len(saved_files):
         raise Exception("The length of the colors and files must be the same.")
@@ -138,16 +142,17 @@ if colors[0] != "NONE":
 
 # %%
 for i, gh in enumerate(global_historys):
-    si = int(start_per * len(gh["loss"])) # use in for, if the len are diffrent
-    ei = int(end_per * len(gh["loss"]))
+    length = len(gh["loss"])
     if colors[0] == "NONE":
         # or can fill the list with 'colors = ["C1", "C2", ...]'
-        plt.plot(range(si, ei), gh["loss"][si:ei], label=plot_labels[i])
+        plt.plot(range(length), gh["loss"], label=plot_labels[i])
     else:
-        plt.plot(range(si, ei), gh["loss"][si:ei], label=plot_labels[i], color=colors[i])
+        plt.plot(range(length), gh["loss"], label=plot_labels[i], color=colors[i])
 plt.xlabel("Epochs")
 plt.ylabel("Loss")
 plt.title(loss_title)
+plt.xlim(left=xlim_left, right=xlim_right)
+plt.ylim(bottom=ylim_bottom, top=ylim_top)
 plt.legend()
 
 if plot_save_name != 'NONE':
@@ -164,16 +169,17 @@ if show_plot:
 plt.clf() # clear the figure
 
 for i, gh in enumerate(global_historys):
-    si = int(start_per * len(gh["loss"]))
-    ei = int(end_per * len(gh["loss"]))
+    length = len(gh["accuracy"])
     if colors[0] == "NONE":
         # or can fill the list with 'colors = ["C1", "C2", ...]'
-        plt.plot(range(si, ei), gh["accuracy"][si:ei], label=plot_labels[i])
+        plt.plot(range(length), gh["accuracy"], label=plot_labels[i])
     else:
-        plt.plot(range(si, ei), gh["accuracy"][si:ei], label=plot_labels[i], color=colors[i])
+        plt.plot(range(length), gh["accuracy"], label=plot_labels[i], color=colors[i])
 plt.xlabel("Epochs")
 plt.ylabel("Accuracy")
 plt.title(acc_title)
+plt.xlim(left=xlim_left, right=xlim_right)
+plt.ylim(bottom=ylim_bottom, top=ylim_top)
 plt.legend()
 
 if plot_save_name != 'NONE':
