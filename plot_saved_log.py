@@ -67,7 +67,7 @@ parser.add_argument("--show_plot", "-o", dest="show_plot", type=int, default="1"
 parser.add_argument("--plot_dpi", "-d", dest="plot_dpi", type=float_range(10, 1000), default="100",
                     help="set dpi for plotting figures, between [10...1000]")
 parser.add_argument("--colors", "-c", dest="colors", type=lambda y:re.split(' |, ', y), default="NONE",
-                    help="set color for each plot in order, like: \"red, #00FF00, b, C1, C2, ...\"")
+                    help="set color for each plot in order, like: \"red, r, #FF0000, C3, ...\"")
 
 
 args, unknown = parser.parse_known_args()
@@ -98,34 +98,34 @@ for i, arg in enumerate(unknown):
 # saved_files = list()
 # plot_labels = list()
 
+# saved_files.append("FSS_MNIST_MLP1_sum_diff_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# saved_files.append("FSS_MNIST_MLP1_cca_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 # saved_files.append("FSS_MNIST_MLP1_cka_linear_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 # saved_files.append("FSS_MNIST_MLP1_cka_rbf_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 # saved_files.append("FSS_MNIST_MLP1_dcka_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_sum_diff_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_cca_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 # saved_files.append("FA_MNIST_MLP1_10c_32b_1.0cp_normal_1rs_0.001lr_1ce_step_1049.npz")
 # saved_files.append("FS_MNIST_MLP1_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
 
-# plot_labels.append("linear")
-# plot_labels.append("rbf")
-# plot_labels.append("dcka")
-# plot_labels.append("diff")
-# plot_labels.append("cca")
-# plot_labels.append("FA")
-# plot_labels.append("FS")
+# plot_labels.append("OSAD")
+# plot_labels.append("CCA")
+# plot_labels.append("CKA_Linear")
+# plot_labels.append("CKA_RBF")
+# plot_labels.append("DCKA")
+# plot_labels.append("FedAvg")
+# plot_labels.append("FedSwap")
 
-# plot_title = "Loss/Acc on data"
+# plot_title = "Accuracy on test data"
 # plot_selection = "accuracy"
 # xlabel = "Epochs"
-# ylabel = "Loss/Acc"
+# ylabel = "Acc"
 # root_path = r"D:\SSD_Optimization\User\Desktop\save_log\MNIST_log"
-# xlim_left = "0.9"
+# xlim_left = "None"
 # xlim_right = "None"
 # ylim_bottom = "None"
 # ylim_top = "None"
 # plot_save_name = "NONE"
 # show_plot = 1
-# matplotlib.rcParams["figure.dpi"] = 100
+# matplotlib.rcParams["figure.dpi"] = 600
 # colors = ["NONE"]
 
 # %%
@@ -142,7 +142,6 @@ ylim_bottom = change_type(ylim_bottom)
 ylim_top = change_type(ylim_top)
 
 # %%
-# Check correctness
 for sf in saved_files:
     file_path = os.path.join(root_path, sf)
     file_name = sorted(glob.glob(file_path+"*"), key=os.path.getmtime)
@@ -155,7 +154,10 @@ for sf in saved_files:
     npzFile.close()
 
 
-if colors[0] != "NONE":
+# colors correctness
+if colors[0] == "NONE":
+    colors = [f"C{i}"  for i in range(len(global_historys))]
+else:
     if len(colors) != len(saved_files):
         raise Exception("The length of the colors and files must be the same.")
 
@@ -165,14 +167,12 @@ if colors[0] != "NONE":
 # %%
 for i, gh in enumerate(global_historys):
     length = len(gh[plot_selection])
-    if colors[0] == "NONE":
-        # or can fill the list with 'colors = ["C1", "C2", ...]'
-        plt.plot(range(length), gh[plot_selection], label=plot_labels[i])
-    else:
-        plt.plot(range(length), gh[plot_selection], label=plot_labels[i], color=colors[i])
+    plt.plot(range(length), gh[plot_selection], label=plot_labels[i], color=colors[i])
+
 plt.xlabel(xlabel)
 plt.ylabel(ylabel)
 plt.title(plot_title)
+plt.margins(x=0.05)
 plt.xlim(left=xlim_left, right=xlim_right)
 plt.ylim(bottom=ylim_bottom, top=ylim_top)
 plt.legend()
