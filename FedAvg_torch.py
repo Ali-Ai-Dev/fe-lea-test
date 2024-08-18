@@ -92,23 +92,23 @@ seed = args.seed
 remain = args.remain
 
 # %%
-# Hyper parameters (Manual)
-dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
-neural_network_type = "Conv5" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
+# # Hyper parameters (Manual)
+# dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
+# neural_network_type = "Conv5" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
 
-num_clients = 10 # except for 'FEMNISTwriter'
-batch_size = 16
-total_steps = 46
-client_select_percentage = 1
-clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
-data_random_split = 1 # 0 or 1
+# num_clients = 10 # except for 'FEMNISTwriter'
+# batch_size = 16
+# total_steps = 46
+# client_select_percentage = 1
+# clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
+# data_random_split = 1 # 0 or 1
 
-learning_rate = 1e-4
-loss_fn = nn.CrossEntropyLoss()
-client_epochs = 1
-seed = 42 
+# learning_rate = 1e-4
+# loss_fn = nn.CrossEntropyLoss()
+# client_epochs = 1
+# seed = 42 
 
-remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
+# remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
 
 # %%
 # Set seed for reproducing code

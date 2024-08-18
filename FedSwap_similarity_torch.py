@@ -112,30 +112,30 @@ n_swap_bet_avg_p1 = args.n_swap_bet_avg_p1
 remain = args.remain
 
 # %%
-# Hyper parameters (Manual)
-dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
-neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
-similarity_mode = "cka_rbf" # 'cca' or 'cka_linear' or 'cka_rbf' or 'sum_diff' or 'dcka'
-swap_mode = "best" # 'greedy' or 'best'
+# # Hyper parameters (Manual)
+# dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
+# neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
+# similarity_mode = "cka_rbf" # 'cca' or 'cka_linear' or 'cka_rbf' or 'sum_diff' or 'dcka'
+# swap_mode = "best" # 'greedy' or 'best'
 
-num_clients = 10 # except for 'FEMNISTwriter'
-batch_size = 16
-total_steps = 64
-client_select_percentage = 1.0
-swap_percentage = 1
-clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
-data_random_split = 1 # 0 or 1
+# num_clients = 10 # except for 'FEMNISTwriter'
+# batch_size = 16
+# total_steps = 64
+# client_select_percentage = 1.0
+# swap_percentage = 1
+# clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
+# data_random_split = 1 # 0 or 1
 
-learning_rate = 1e-4
-loss_fn = nn.CrossEntropyLoss()
-client_epochs = 1
-print_eval_each_step = 1 # 0 or 1 - if set 0 means, only print when assign global weights to each client
-seed = 42 
+# learning_rate = 1e-4
+# loss_fn = nn.CrossEntropyLoss()
+# client_epochs = 1
+# print_eval_each_step = 1 # 0 or 1 - if set 0 means, only print when assign global weights to each client
+# seed = 42 
 
-swap_step = 3
-n_swap_bet_avg_p1 = 10 # p1=plus one to your number, if need 2 swap between avg, enter 3
+# swap_step = 3
+# n_swap_bet_avg_p1 = 10 # p1=plus one to your number, if need 2 swap between avg, enter 3
 
-remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
+# remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
 
 # %%
 # Set seed for reproducing code
