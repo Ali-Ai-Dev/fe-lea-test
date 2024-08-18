@@ -20,21 +20,6 @@ import h5py
 from FEMNIST_by_write import get_client_datasets, get_test_dataset
 
 # %%
-# Set seed for reproducing code
-mySeed = 42
-random.seed(mySeed)  # Python random module.
-np.random.seed(mySeed)  # Numpy module.
-torch.manual_seed(mySeed)
-torch.cuda.manual_seed(mySeed)
-torch.cuda.manual_seed_all(mySeed)  # if you are using multi-GPU.
-
-dataloader_generator = torch.Generator()
-dataloader_generator.manual_seed(mySeed)
-
-torch.backends.cudnn.benchmark = False
-torch.backends.cudnn.deterministic = True
-
-# %%
 def float_range(mini, maxi):
     """Return function handle of an argument type function for 
        ArgumentParser checking a float range: mini <= arg <= maxi
@@ -90,6 +75,8 @@ parser.add_argument("--client_epochs", "-e", dest="client_epochs", type=int, def
                     help="client epochs")
 parser.add_argument("--print_eval_each_step", "-i", dest="print_eval_each_step", type=int, default="1",
                     help="set 0 means, only print when assign global weights to each client", choices=[0, 1])
+parser.add_argument("--seed", dest="seed", type=int, default="42",
+                    help="random seed")
 parser.add_argument("--swap_step", "-s", dest="swap_step", type=int, default="3",
                     help="swap clients weights after X step")
 parser.add_argument("--num_swap_bet_avg", "-a", dest="n_swap_bet_avg_p1", type=int, default="10",
@@ -117,6 +104,7 @@ learning_rate = args.learning_rate
 loss_fn = nn.CrossEntropyLoss()
 client_epochs = args.client_epochs
 print_eval_each_step = args.print_eval_each_step
+seed = args.seed
 
 swap_step = args.swap_step
 n_swap_bet_avg_p1 = args.n_swap_bet_avg_p1
@@ -124,29 +112,44 @@ n_swap_bet_avg_p1 = args.n_swap_bet_avg_p1
 remain = args.remain
 
 # %%
-# # Hyper parameters (Manual)
-# dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
-# neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
-# similarity_mode = "cka_rbf" # 'cca' or 'cka_linear' or 'cka_rbf' or 'sum_diff' or 'dcka'
-# swap_mode = "best" # 'greedy' or 'best'
+# Hyper parameters (Manual)
+dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
+neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
+similarity_mode = "cka_rbf" # 'cca' or 'cka_linear' or 'cka_rbf' or 'sum_diff' or 'dcka'
+swap_mode = "best" # 'greedy' or 'best'
 
-# num_clients = 10 # except for 'FEMNISTwriter'
-# batch_size = 16
-# total_steps = 64
-# client_select_percentage = 1.0
-# swap_percentage = 1
-# clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
-# data_random_split = 1 # 0 or 1
+num_clients = 10 # except for 'FEMNISTwriter'
+batch_size = 16
+total_steps = 64
+client_select_percentage = 1.0
+swap_percentage = 1
+clients_data_distribution = "normal" # 'equal' or 'random' or 'normal'
+data_random_split = 1 # 0 or 1
 
-# learning_rate = 1e-4
-# loss_fn = nn.CrossEntropyLoss()
-# client_epochs = 1
-# print_eval_each_step = 1 # 0 or 1 - if set 0 means, only print when assign global weights to each client
+learning_rate = 1e-4
+loss_fn = nn.CrossEntropyLoss()
+client_epochs = 1
+print_eval_each_step = 1 # 0 or 1 - if set 0 means, only print when assign global weights to each client
+seed = 42 
 
-# swap_step = 3
-# n_swap_bet_avg_p1 = 10 # p1=plus one to your number, if need 2 swap between avg, enter 3
+swap_step = 3
+n_swap_bet_avg_p1 = 10 # p1=plus one to your number, if need 2 swap between avg, enter 3
 
-# remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
+remain = 0.001 # Remove some data for running faster in test, except for 'FEMNISTwriter'
+
+# %%
+# Set seed for reproducing code
+random.seed(seed)  # Python random module.
+np.random.seed(seed)  # Numpy module.
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
+
+dataloader_generator = torch.Generator()
+dataloader_generator.manual_seed(seed)
+
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
 
 # %%
 # Initialize parameters
@@ -176,7 +179,7 @@ save_file_name_pre = f"""FSS
 _{dataset_name}_{neural_network_type}_{similarity_mode}_{swap_mode}
 _{num_clients}c_{batch_size}b_{client_select_percentage}cp_{swap_percentage}sp
 _{clients_data_distribution}_{data_random_split}rs_{learning_rate}lr_{client_epochs}ce
-_{print_eval_each_step}pes_{swap_step}_{n_swap_bet_avg_p1}_step"""
+_{print_eval_each_step}pes_{seed}se_{swap_step}_{n_swap_bet_avg_p1}_step"""
 save_file_name_pre = save_file_name_pre.replace("\n", "")
 print(f"save_log_file_name: '{save_file_name_pre}'")
 
