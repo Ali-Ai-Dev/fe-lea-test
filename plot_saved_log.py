@@ -98,26 +98,29 @@ for i, arg in enumerate(unknown):
 # saved_files = list()
 # plot_labels = list()
 
-# saved_files.append("FSS_MNIST_MLP1_sum_diff_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_cca_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_cka_linear_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_cka_rbf_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FSS_MNIST_MLP1_dcka_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
-# saved_files.append("FA_MNIST_MLP1_10c_32b_1.0cp_normal_1rs_0.001lr_1ce_step_1049.npz")
-# saved_files.append("FS_MNIST_MLP1_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FSS_MNIST_MLP1_sum_diff_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FSS_MNIST_MLP1_cca_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FSS_MNIST_MLP1_cka_linear_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FSS_MNIST_MLP1_cka_rbf_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FSS_MNIST_MLP1_dcka_best_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# # saved_files.append("FA_MNIST_MLP1_10c_32b_1.0cp_normal_1rs_0.001lr_1ce_step_1049.npz")
+# # saved_files.append("FS_MNIST_MLP1_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049.npz")
+# saved_files.append("FS_MNIST_MLP1_10c_32b_1.0cp_1.0sp_normal_1rs_0.001lr_1ce_1pes_5_3_step_1049_avg.npz")
 
-# plot_labels.append("OSAD")
-# plot_labels.append("CCA")
-# plot_labels.append("CKA_Linear")
-# plot_labels.append("CKA_RBF")
-# plot_labels.append("DCKA")
-# plot_labels.append("FedAvg")
-# plot_labels.append("FedSwap")
+# # plot_labels.append("OSAD")
+# # plot_labels.append("CCA")
+# # plot_labels.append("CKA_Linear")
+# # plot_labels.append("CKA_RBF")
+# # plot_labels.append("DCKA")
+# # plot_labels.append("FedAvg")
+# # plot_labels.append("FedSwap")
+# plot_labels.append("avg")
 
-# plot_title = "Accuracy on test data"
+# # plot_title = "Accuracy on test data"
+# plot_title = ""
 # plot_selection = "accuracy"
 # xlabel = "Epochs"
-# ylabel = "Acc"
+# ylabel = "Accuracy"
 # root_path = r"D:\SSD_Optimization\User\Desktop\save_log\MNIST_log"
 # xlim_left = "None"
 # xlim_right = "None"
@@ -127,6 +130,7 @@ for i, arg in enumerate(unknown):
 # show_plot = 1
 # matplotlib.rcParams["figure.dpi"] = 600
 # colors = ["NONE"]
+# # colors = ['C2', 'C3', 'C4', 'C5', 'C6', 'C0', 'C1']
 
 # %%
 def change_type(variable):
@@ -161,6 +165,28 @@ else:
     if len(colors) != len(saved_files):
         raise Exception("The length of the colors and files must be the same.")
 
+# %%
+# # Get the avg from all files as a input
+# lst_acc = []
+# lst_loss = []
+# for gh in global_historys:
+#     if len(global_historys[0]["accuracy"]) != len(gh["accuracy"]):
+#         raise Exception("The length of the files must be the same.")
+
+#     lst_acc.append(gh["accuracy"])
+#     lst_loss.append(gh["loss"])
+
+# lst_acc_avg = np.mean(lst_acc, axis=0)
+# lst_loss_avg = np.mean(lst_loss, axis=0)
+
+# global_historys[0]["accuracy"] = lst_acc_avg
+# global_historys[0]["loss"] = lst_loss_avg
+
+# save_file_name = file_name[0].split("\\")[-1][:-4]
+# np.savez_compressed(f"{root_path}/{save_file_name}_avg.npz",
+#                         global_history=global_historys[0],
+#                         )
+
 # %% [markdown]
 # ### Loss/Acc
 
@@ -172,7 +198,7 @@ for i, gh in enumerate(global_historys):
 plt.xlabel(xlabel)
 plt.ylabel(ylabel)
 plt.title(plot_title)
-plt.margins(x=0.05)
+plt.margins(x=0.04)
 plt.xlim(left=xlim_left, right=xlim_right)
 plt.ylim(bottom=ylim_bottom, top=ylim_top)
 plt.legend()
