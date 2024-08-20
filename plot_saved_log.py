@@ -183,7 +183,7 @@ else:
 # global_historys[0]["loss"] = lst_loss_avg
 
 # save_file_name = file_name[0].split("\\")[-1][:-4]
-# np.savez_compressed(f"{root_path}/{save_file_name}_avg.npz",
+# np.savez_compressed(f"{root_path}/avg_{save_file_name}.npz",
 #                         global_history=global_historys[0],
 #                         )
 
