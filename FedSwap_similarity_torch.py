@@ -114,7 +114,7 @@ remain = args.remain
 # %%
 # # Hyper parameters (Manual)
 # dataset_name = "MNIST" # 'MNIST' or 'CIFAR10' or 'CINIC10' or 'FEMNIST' or 'FEMNISTwriter'
-# neural_network_type = "Conv4" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
+# neural_network_type = "Conv2" # 'MLP1' or 'MLP2' or'Conv1' or'Conv2' or'Conv3' or'Conv4' or'Conv5'
 # similarity_mode = "cka_rbf" # 'cca' or 'cka_linear' or 'cka_rbf' or 'sum_diff' or 'dcka'
 # swap_mode = "best" # 'greedy' or 'best'
 
@@ -155,6 +155,7 @@ torch.backends.cudnn.deterministic = True
 # Initialize parameters
 client_selects = None
 client_weights = None
+client_selection_counter = 0
 
 passed_steps = 0
 is_print_eval = False
@@ -685,13 +686,23 @@ class Neural_Network_Conv5(nn.Module):
             param.data = parameters_list[i].data
 
 # %%
+num_client_selection = np.ceil(total_steps / (swap_step*n_swap_bet_avg_p1))+1
+lst_client_selection = []
+
+for i in range(int(num_client_selection)):
+    lst = np.arange(0, num_clients)
+    np.random.shuffle(lst)
+    client_selected = lst[: int(len(lst)*client_select_percentage)]
+    lst_client_selection.append(client_selected)
+
+# %%
 def select_clients_and_assign_weights(global_weights):
     global client_selects
     global client_weights
+    global client_selection_counter
 
-    lst = np.arange(0, num_clients)
-    np.random.shuffle(lst)
-    client_selects = lst[: int(len(lst)*client_select_percentage)]
+    client_selects = lst_client_selection[client_selection_counter]
+    client_selection_counter += 1
 
     client_weights = {i: copy.deepcopy(global_weights)  for i in client_selects}
 
